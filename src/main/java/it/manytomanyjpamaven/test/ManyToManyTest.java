@@ -1,6 +1,7 @@
 package it.manytomanyjpamaven.test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import it.manytomanyjpamaven.dao.EntityManagerUtil;
 import it.manytomanyjpamaven.model.Ruolo;
@@ -20,22 +21,25 @@ public class ManyToManyTest {
 		try {
 
 			// inizializzo i ruoli sul db
-			initRuoli(ruoloServiceInstance);
+//			initRuoli(ruoloServiceInstance);
+//
+//			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
+//
+//			testInserisciNuovoUtente(utenteServiceInstance);
+//			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
+//
+//			testCollegaUtenteARuoloEsistente(ruoloServiceInstance, utenteServiceInstance);
+//			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
+//
+//			testModificaStatoUtente(utenteServiceInstance);
+//			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
+//
+//			testRimuoviRuoloDaUtente(ruoloServiceInstance, utenteServiceInstance);
+//			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
 
-			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
-
-			testInserisciNuovoUtente(utenteServiceInstance);
-			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
-
-			testCollegaUtenteARuoloEsistente(ruoloServiceInstance, utenteServiceInstance);
-			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
-
-			testModificaStatoUtente(utenteServiceInstance);
-			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
-
-			testRimuoviRuoloDaUtente(ruoloServiceInstance, utenteServiceInstance);
-			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
-
+			testRimuoviRuolo(ruoloServiceInstance);
+			System.out.println("Gli elementi della tabella RUOLO sono: "+ruoloServiceInstance.listAll().size());
+			
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
@@ -149,4 +153,15 @@ public class ManyToManyTest {
 		System.out.println(".......testRimuoviRuoloDaUtente fine: PASSED.............");
 	}
 
+	
+	private static void testRimuoviRuolo(RuoloService ruoloService) throws Exception {
+		System.out.println(".......testRimuoviRuolo inizio.............");
+		List<Ruolo> listaRuoli = ruoloService.listAll();
+		if (listaRuoli.size() < 1) {
+			throw new RuntimeException("testRimuoviRuolo FAILED: non ci sono ruoli presenti in lista");
+		}
+		Long idRuoloDaRimuovere = listaRuoli.get(0).getId();
+		ruoloService.rimuovi(idRuoloDaRimuovere);
+		System.out.println("Fine test");
+	}
 }

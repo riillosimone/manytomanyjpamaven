@@ -6,16 +6,32 @@ import javax.persistence.EntityManager;
 
 import it.manytomanyjpamaven.dao.EntityManagerUtil;
 import it.manytomanyjpamaven.dao.RuoloDAO;
+import it.manytomanyjpamaven.dao.UtenteDAO;
+import it.manytomanyjpamaven.exception.RuoloConUtentiException;
 import it.manytomanyjpamaven.model.Ruolo;
 
 public class RuoloServiceImpl implements RuoloService {
 
 	private RuoloDAO ruoloDAO;
+	private UtenteDAO utenteDAO;
 
 	@Override
 	public List<Ruolo> listAll() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			ruoloDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return ruoloDAO.list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override
@@ -70,13 +86,40 @@ public class RuoloServiceImpl implements RuoloService {
 
 	@Override
 	public void rimuovi(Long idRuoloToRemove) throws Exception {
-		// TODO Auto-generated method stub
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			ruoloDAO.setEntityManager(entityManager);
+			utenteDAO.setEntityManager(entityManager);
+			
+			if(utenteDAO.findAllByRuolo(ruoloDAO.get(idRuoloToRemove)).size()>0)
+				throw new RuoloConUtentiException("Impossibile rimuovere ruoli associati a utenti.");
+			
+			
+			// eseguo quello che realmente devo fare
+			ruoloDAO.delete(ruoloDAO.get(idRuoloToRemove));
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		}
 
 	}
 
 	@Override
 	public void setRuoloDAO(RuoloDAO ruoloDAO) {
 		this.ruoloDAO = ruoloDAO;
+	}
+	@Override
+	public void setUtenteDAO(UtenteDAO utenteDAO) {
+		this.utenteDAO = utenteDAO;
+		
 	}
 
 	@Override
@@ -98,5 +141,7 @@ public class RuoloServiceImpl implements RuoloService {
 			EntityManagerUtil.closeEntityManager(entityManager);
 		}
 	}
+
+
 
 }
