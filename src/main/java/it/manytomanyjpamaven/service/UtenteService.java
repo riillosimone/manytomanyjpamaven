@@ -24,6 +24,10 @@ public interface UtenteService {
 	public void rimuoviRuoloDaUtente(Long idUtente,Long idRuolo) throws Exception;
 
 	public Utente caricaUtenteSingoloConRuoli(Long id) throws Exception;
+	
+	public List<Utente> listaUtentiCreatiNelMeseENellAnno (int mese, int anno) throws Exception;
+	
+	public Long contaQuantiUtentiConRuoloAdmin() throws Exception;
 
 	// per injection
 	public void setUtenteDAO(UtenteDAO utenteDAO);

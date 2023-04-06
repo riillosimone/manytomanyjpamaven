@@ -56,7 +56,24 @@ public class RuoloServiceImpl implements RuoloService {
 
 	@Override
 	public void aggiorna(Ruolo ruoloInstance) throws Exception {
-		// TODO Auto-generated method stub
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			ruoloDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			ruoloDAO.update(ruoloInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		}
 
 	}
 
@@ -133,6 +150,26 @@ public class RuoloServiceImpl implements RuoloService {
 
 			// eseguo quello che realmente devo fare
 			return ruoloDAO.findByDescrizioneAndCodice(descrizione, codice);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public List<String> listaDistintaDescrizioneRuoliUtentiAssociati() throws Exception {
+
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			ruoloDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return ruoloDAO.findDistinctDescrizioneRuoloConUtentiAssociati();
 
 		} catch (Exception e) {
 			e.printStackTrace();

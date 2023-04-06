@@ -10,4 +10,7 @@ public interface UtenteDAO extends IBaseDAO<Utente> {
 	public List<Utente> findAllByRuolo(Ruolo ruoloInput);
 	public Utente findByIdFetchingRuoli(Long id);
 
+	public List<Utente> findAllCreatedInMonthAndYear(int mese,int anno);
+	
+	public Long countUtentiWithRuoloAdmin ();
 }

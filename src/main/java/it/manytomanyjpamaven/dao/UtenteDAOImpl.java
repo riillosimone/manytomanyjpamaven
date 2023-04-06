@@ -3,6 +3,7 @@ package it.manytomanyjpamaven.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import it.manytomanyjpamaven.model.Ruolo;
@@ -66,6 +67,22 @@ public class UtenteDAOImpl implements UtenteDAO {
 		TypedQuery<Utente> query = entityManager.createQuery("select u FROM Utente u left join fetch u.ruoli r where u.id = :idUtente",Utente.class);
 		query.setParameter("idUtente", id);
 		return query.getResultList().stream().findFirst().orElse(null);
+	}
+
+	@Override
+	public List<Utente> findAllCreatedInMonthAndYear(int mese, int anno) {
+		TypedQuery<Utente> query = entityManager.createQuery("from Utente u where month(u.dateCreated) = :mese and year(u.dateCreated)= :anno",Utente.class);
+		query.setParameter("mese", mese);
+		query.setParameter("anno", anno);
+		return query.getResultList();
+	}
+
+	@Override
+	public Long countUtentiWithRuoloAdmin() {
+		Long result = 0L;
+		Query query = entityManager.createQuery("select count(u.id) from Utente u join u.ruoli r where r.codice like 'ROLE_ADMIN'");
+		result = (Long) query.getSingleResult();
+		return result;
 	}
 
 }

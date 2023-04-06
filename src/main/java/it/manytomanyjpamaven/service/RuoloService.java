@@ -18,6 +18,9 @@ public interface RuoloService {
 	public void rimuovi(Long idRuoloToRemove) throws Exception;
 
 	public Ruolo cercaPerDescrizioneECodice(String descrizione, String codice) throws Exception;
+	
+	public List<String> listaDistintaDescrizioneRuoliUtentiAssociati() throws Exception;
+	
 
 	// per injection
 	public void setRuoloDAO(RuoloDAO ruoloDAO);

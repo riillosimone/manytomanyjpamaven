@@ -37,7 +37,16 @@ public class ManyToManyTest {
 //			testRimuoviRuoloDaUtente(ruoloServiceInstance, utenteServiceInstance);
 //			System.out.println("In tabella Utente ci sono " + utenteServiceInstance.listAll().size() + " elementi.");
 
-			testRimuoviRuolo(ruoloServiceInstance);
+//			testRimuoviRuolo(ruoloServiceInstance);
+//			System.out.println("Gli elementi della tabella RUOLO sono: "+ruoloServiceInstance.listAll().size());
+
+//			testListaUtentiCreatiNelMeseENellAnno(utenteServiceInstance);
+//			System.out.println("Gli elementi della tabella UTENTE sono: "+utenteServiceInstance.listAll().size());
+			
+//			testContaUtentiAdmin(utenteServiceInstance);
+//			System.out.println("Gli elementi della tabella UTENTE sono: "+utenteServiceInstance.listAll().size());
+			
+			testListaDistintaDescrizioniRuoloConUtentiAssociati(ruoloServiceInstance);
 			System.out.println("Gli elementi della tabella RUOLO sono: "+ruoloServiceInstance.listAll().size());
 			
 		} catch (Throwable e) {
@@ -153,7 +162,6 @@ public class ManyToManyTest {
 		System.out.println(".......testRimuoviRuoloDaUtente fine: PASSED.............");
 	}
 
-	
 	private static void testRimuoviRuolo(RuoloService ruoloService) throws Exception {
 		System.out.println(".......testRimuoviRuolo inizio.............");
 		List<Ruolo> listaRuoli = ruoloService.listAll();
@@ -164,4 +172,49 @@ public class ManyToManyTest {
 		ruoloService.rimuovi(idRuoloDaRimuovere);
 		System.out.println("Fine test");
 	}
+
+	private static void testListaUtentiCreatiNelMeseENellAnno(UtenteService utenteService) throws Exception {
+		System.out.println(".......testListaUtentiCreatiNelMeseENellAnno inizio.............");
+		List<Utente> listaUtenti = utenteService.listAll();
+		if (listaUtenti.size() < 1) {
+			throw new RuntimeException(
+					"testListaUtentiCreatiNelMeseENellAnno FAILED: non ci sono ruoli presenti in lista");
+		}
+		int meseDaCercare = 2;
+		int annoDaCercare = 2023;
+		List<Utente> listaUtentiCreatiNelMeseENellAnno = utenteService.listaUtentiCreatiNelMeseENellAnno(meseDaCercare,
+				annoDaCercare);
+		if (listaUtentiCreatiNelMeseENellAnno.size() < 1) {
+			throw new RuntimeException("Attenzione: non sono presenti voci per questo anno e questo mese.");
+		}
+		System.out.println(listaUtentiCreatiNelMeseENellAnno);
+		System.out.println(".......testListaUtentiCreatiNelMeseENellAnno fine: PASSED.............");
+	}
+	
+	private static void testContaUtentiAdmin(UtenteService utenteService) throws Exception {
+		System.out.println(".......testContaUtentiAdmin inizio.............");
+		List<Utente> listaUtenti = utenteService.listAll();
+		if (listaUtenti.size() < 1) {
+			throw new RuntimeException(
+					"testListaUtentiCreatiNelMeseENellAnno FAILED: non ci sono ruoli presenti in lista");
+		}
+		Long contatoreAdmin = utenteService.contaQuantiUtentiConRuoloAdmin();
+		if (contatoreAdmin == 0) {
+			throw new RuntimeException("Attenzione: non sono presenti Admin.");
+		}
+		System.out.println("Il contatore segna: "+contatoreAdmin);
+		System.out.println(".......testContaUtentiAdmin fine: PASSED.............");
+	}
+	
+	private static void testListaDistintaDescrizioniRuoloConUtentiAssociati(RuoloService ruoloService) throws Exception {
+		System.out.println(".......testRimuoviRuolo inizio.............");
+		List<Ruolo> listaRuoli = ruoloService.listAll();
+		if (listaRuoli.size() < 1) {
+			throw new RuntimeException("testRimuoviRuolo FAILED: non ci sono ruoli presenti in lista");
+		}
+		List<String> listaDescrizioni = ruoloService.listaDistintaDescrizioneRuoliUtentiAssociati();
+		System.out.println(listaDescrizioni);
+		System.out.println("Fine test");
+	}
+	
 }
